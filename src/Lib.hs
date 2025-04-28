@@ -13,8 +13,6 @@ data Personaje = UnPersonaje {
     vida :: Int
 } deriving (Show)
 
-
-
 agregarEspinaNombre :: Personaje->Personaje
 agregarEspinaNombre unPersonaje = unPersonaje {nombre = nombre unPersonaje + "Espina estuvo aqui"}
 
@@ -42,17 +40,18 @@ granadaDeEspinas :: Int->Personaje->Personaje
 granadaDeEspinas radioExplosion unPersonaje
   | radioExplosion > 3 && unPersonaje vida < 800 = unPersonaje {nombre = agregarEspinaNombre unPersonaje, superPoderActivo = desactivarSuper unPersonaje, vida =  vida unPersonaje - vida unPersonaje}  
   | radioExplosion > 3 = unPersonaje { nombre = agregarEspinaNombre unPersonaje}
+  | otherwise = bolaEspinosa unPersonaje
 
 torretaCurativa :: Personaje->Personaje
 torretaCurativa unPersonaje = unPersonaje {vida = (vida unPersonaje) * 2, superPoderActivo = activarSuper unPersonaje}
 
 atacarPoderEspecial :: Personaje->Personaje->Personaje
 atacarPoderEspecial atacante defensor
-  | superPoderActivo atacante = poder atacante defensor
+  | superPoderActivo atacante = (poder atacante).(superPoder atacante) defensor
   | otherwise = defensor
 
 estaEnLasUltimas :: Personaje->String
-estaEnLasUltimas unPersonaje = unPersonaje.vida < 800
+estaEnLasUltimas unPersonaje = vida unPersonaje < 800
 
 Espina :: Personaje
 Espina = UnPersonaje "Espina" bolaEspinosa (granadaDeEspinas 5) true 4800
