@@ -13,51 +13,51 @@ data Personaje = UnPersonaje {
     vida :: Int
 } deriving (Show)
 
-agregarEspinaNombre :: Personaje->Personaje
-agregarEspinaNombre unPersonaje = unPersonaje {nombre = nombre unPersonaje + "Espina estuvo aqui"}
+agregarEspinaNombre :: String->String
+agregarEspinaNombre unNombre =  unNombre ++ "Espina estuvo aqui"
 
-desactivarSuper :: Personaje->Personaje
-desactivarSuper unPersonaje 
-  | superPoderActivo unPersonaje = unPersonaje {superPoderActivo = not.superPoderActivo unPersonaje}
-  | otherwise = unPersonaje
+desactivarSuper :: Bool->Bool
+desactivarSuper super 
+  | super = not super
+  | otherwise = super
 
 activarSuper :: Personaje->Personaje
 activarSuper unPersonaje
   | superPoderActivo unPersonaje = unPersonaje
-  | otherwise = unPersonaje {superPoderActivo = not.superPoderActivo unPersonaje}
+  | otherwise = unPersonaje {superPoderActivo = not (superPoderActivo unPersonaje)}
 
 bolaEspinosa :: Personaje->Personaje
 bolaEspinosa unPersonaje
   | vida unPersonaje >= 1000 = unPersonaje {vida = vida unPersonaje - 1000}
   | otherwise = unPersonaje { vida = vida unPersonaje - vida unPersonaje}
 
-lluviaDeTuercas :: Personaje->Bool->Personaje
-lluviaDeTuercas unPersonaje esSanadora 
+lluviaDeTuercas :: Bool->Personaje->Personaje
+lluviaDeTuercas esSanadora unPersonaje
   | esSanadora = unPersonaje {vida = vida unPersonaje + 800}
   | otherwise = unPersonaje {vida = vida unPersonaje - div (vida unPersonaje) 2}
 
 granadaDeEspinas :: Int->Personaje->Personaje
 granadaDeEspinas radioExplosion unPersonaje
-  | radioExplosion > 3 && unPersonaje vida < 800 = unPersonaje {nombre = agregarEspinaNombre unPersonaje, superPoderActivo = desactivarSuper unPersonaje, vida =  vida unPersonaje - vida unPersonaje}  
-  | radioExplosion > 3 = unPersonaje { nombre = agregarEspinaNombre unPersonaje}
+  | radioExplosion > 3 && vida unPersonaje < 800 = unPersonaje {nombre = agregarEspinaNombre $ nombre unPersonaje, superPoderActivo = desactivarSuper $ superPoderActivo unPersonaje, vida =  vida unPersonaje - vida unPersonaje}  
+  | radioExplosion > 3 = unPersonaje { nombre = agregarEspinaNombre $ nombre unPersonaje}
   | otherwise = bolaEspinosa unPersonaje
 
 torretaCurativa :: Personaje->Personaje
-torretaCurativa unPersonaje = unPersonaje {vida = (vida unPersonaje) * 2, superPoderActivo = activarSuper unPersonaje}
+torretaCurativa unPersonaje = unPersonaje {vida = (vida unPersonaje) * 2, superPoderActivo = not (desactivarSuper $ superPoderActivo unPersonaje)}
 
 atacarPoderEspecial :: Personaje->Personaje->Personaje
 atacarPoderEspecial atacante defensor
-  | superPoderActivo atacante = (poder atacante).(superPoder atacante) defensor
+  | superPoderActivo atacante = ((poder atacante).(superPoder atacante)) defensor
   | otherwise = defensor
 
-estaEnLasUltimas :: Personaje->String
+estaEnLasUltimas :: Personaje->Bool
 estaEnLasUltimas unPersonaje = vida unPersonaje < 800
 
-Espina :: Personaje
-Espina = UnPersonaje "Espina" bolaEspinosa (granadaDeEspinas 5) true 4800
+espina :: Personaje
+espina = UnPersonaje "Espina" bolaEspinosa (granadaDeEspinas 5) True 4800
 
-Pamela :: Personaje
-Pamela = UnPersonaje "Pamela" lluviaDeTuercas torretaCurativa false 9600
+pamela :: Personaje
+pamela = UnPersonaje "Pamela" (lluviaDeTuercas True) torretaCurativa False 9600
 
 
 
