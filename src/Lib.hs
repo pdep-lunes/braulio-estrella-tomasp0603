@@ -21,11 +21,6 @@ desactivarSuper super
   | super = not super
   | otherwise = super
 
-activarSuper :: Personaje->Personaje
-activarSuper unPersonaje
-  | superPoderActivo unPersonaje = unPersonaje
-  | otherwise = unPersonaje {superPoderActivo = not (superPoderActivo unPersonaje)}
-
 bolaEspinosa :: Personaje->Personaje
 bolaEspinosa unPersonaje
   | vida unPersonaje >= 1000 = unPersonaje {vida = vida unPersonaje - 1000}
